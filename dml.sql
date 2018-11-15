@@ -35,4 +35,6 @@ species VARCHAR(20), sex CHAR(1), birth DATE, death DATE);
 -- ()
 INSERT INTO pet
 VALUES ('Puffball','Diane','hamster','f','1999-03-30',NULL);
+-- (ejemplo tabla distintos tipos de datos)
+CREATE TABLE tiposdatos (t TIME, dt DATETIME, f FLOAT, i INT, d DECIMAL(5,2), v VARCHAR(20), se SET('20','23','25'), tx TEXT);
 
