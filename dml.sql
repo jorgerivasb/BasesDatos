@@ -22,6 +22,14 @@ mysql> GRANT ALL ON nombre_bd.* TO 'nombre_usuario'@'dominio';
 -- (crear base datos)
 mysql> CREATE DATABASE nombre_bd;
 -- ()
+SHOW CHARACTER SET;
+-- ()
+CREATE DATABASE testsql CHARACTER SET Latin1 COLLATE latin1_spanish_ci;
+-- (modificar: utf8 es lo nuevo que metes)
+ALTER DATABASE testsql CHARACTER SET  utf8;
+-- (eliminar)
+DROP DATABASE nombre;
+-- ()
 SHOW TABLES;
 -- (mostar el contenido de la tabla)
 SELECT * FROM nombre_tabla
