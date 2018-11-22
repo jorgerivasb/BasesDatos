@@ -3,9 +3,9 @@ sudo mysql -u root -p
 CREATE DATABASE series CHARACTER SET utf8 COLLATE utf8_general_ci;
 use series;
 CREATE TABLE clientes (clientes VARCHAR(50), dni VARCHAR(9), direccción VARCHAR(50));
-mysql> CREATE TABLE series (nombre VARCHAR(50), temporadas INT, fecha_emisión DATE, género ENUM('comedia', 'acción', 'drama', 'terror', 'suspense'), idioma VARCHAR(50),director VARCHAR(50), protagonistas VARCHAR(50));
-mysql> CREATE TABLE actores (nombre VARCHAR(50), dni VARCHAR(9), edad INT, país VARCHAR(50));
-mysql> CREATE TABLE país (nombre VARCHAR(50), id VARCHAR(20), continente VARCHAR(50));
+CREATE TABLE series (nombre VARCHAR(50), temporadas INT, fecha_emisión DATE, género ENUM('comedia', 'acción', 'drama', 'terror', 'suspense'), idioma VARCHAR(50),director VARCHAR(50), protagonistas VARCHAR(50));
+CREATE TABLE actores (nombre VARCHAR(50), dni VARCHAR(9), edad INT, país VARCHAR(50));
+CREATE TABLE país (nombre VARCHAR(50), id VARCHAR(20), continente VARCHAR(50));
 
 INSERT INTO clientes VALUES('Pablo Alce Sánchez', '11222333Q', 'avda. La paz s/n Tarazona');
 INSERT INTO clientes VALUES('Paula Marquez Sánchez', '11992333r', 'avda. navarra s/n Cunchillos');
