@@ -154,6 +154,7 @@ CREATE [TEMPORARY] TABLE [IF NOT EXISTS] tbl_name
     
     
     
+    
 -- (alter table)
     
 ALTER [IGNORE] TABLE tbl_name
