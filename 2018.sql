@@ -189,3 +189,72 @@ select equipo_local, equipo_visitante, puntos_local, puntos_visitante from parti
 select equipo_local, equipo_visitante, puntos_local, puntos_visitante from partidos where equipo_local='Lakers' and temporada='99/00' and puntos_local<puntos_visitante or equipo_visitante='Lakers'and temporada='99/00'and puntos_local<puntos_visitante;
 -- (con esta nos ordena alfabeticamente la tabla según la colunma indicada)
 select equipo_local, equipo_visitante, puntos_local, puntos_visitante from partidos where equipo_local='Lakers' and temporada='99/00' and puntos_local<puntos_visitante or equipo_visitante='Lakers'and temporada='99/00'and puntos_local<puntos_visitante order by equipo_local asc;
+ 
+ 
+ 
+ 
+ 
+ 
+ -- (13/12)
+ -- (podemos realizar operaciones)
+ select 3+5;
++-----+
+| 3+5 |
++-----+
+|   8 |
++-----+
+-- (función media)
+select avg(peso)from jugadores;
++-----------+
+| avg(peso) |
++-----------+
+|  223.1181 |
++-----------+
+-- ()
+select nombre, peso from jugadores where peso between 220 and 250;
+-- (convertimos el peso a quilos de los jugadores que pesan entre 200 y 250lbs)
+select nombre, peso/2.20462 from jugadores where peso between 200 and 250;
+ +---------------------+--------------+
+| nombre              | peso/2.20462 |
++---------------------+--------------+
+| Greg Buckner        |      95.2545 |
+| Randy Foye          |      96.6153 |
+| Ryan Gomes          |     113.3982 |
+| Marko Jaric         |     101.6048 |
+| Mark Madsen         |     113.3982 |
+| Craig Smith         |     113.3982 |
+
+-- (para decir que nombre de columna debe mostrar)
+select nombre, peso/2.20462 as 'peso en kg'from jugadores where peso between
++---------------------+------------+
+| nombre              | peso en kg |
++---------------------+------------+
+| Greg Buckner        |    95.2545 |
+| Randy Foye          |    96.6153 |
+
+-- ()
+select count(*) from jugadores where nombre_equipo='Timberwolves';
++----------+
+| count(*) |
++----------+
+|       14 |
++----------+
+-- ()
+select avg(peso) from jugadores where nombre_equipo='Knicks';
++-----------+
+| avg(peso) |
++-----------+
+|  235.4667 |
++-----------+
+select avg(peso/2.20462) as 'peso en kg'from jugadores where nombre_equipo='Knicks';
++--------------+
+| peso en kg   |
++--------------+
+| 106.80601041 |
++--------------+
+-- (los jugadores que juegan en equipos de LA, el nombre del jugador está en la tabla jugadores y la ciudad en la tabla equipos)
+select jugadores.nombre from jugadores, equipos where ciudad="Los Angeles"and jugadores.nombre_equipo=equipos.nombre;
+-- (los jugadores de la conferencia oeste que midan más de 7 feet)
+select jugadores.nombre from jugadores, equipos where equipos.conferencia='West'and jugadores.altura>'7-0' and jugadores.nombre_equipo=equipos.nombre;
+-- (ordenados por altura del más alto)
+select jugadores.nombre from jugadores, equipos where equipos.conferencia='West'and jugadores.altura>'7-0' and jugadores.nombre_equipo=equipos.nombre order by altura desc;
