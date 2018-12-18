@@ -258,3 +258,76 @@ select jugadores.nombre from jugadores, equipos where ciudad="Los Angeles"and ju
 select jugadores.nombre from jugadores, equipos where equipos.conferencia='West'and jugadores.altura>'7-0' and jugadores.nombre_equipo=equipos.nombre;
 -- (ordenados por altura del más alto)
 select jugadores.nombre from jugadores, equipos where equipos.conferencia='West'and jugadores.altura>'7-0' and jugadores.nombre_equipo=equipos.nombre order by altura desc;
+
+
+
+
+
+-- (18/12/18)
+-- (Subconsulta)
+select nombre, altura from jugadores where altura= (select max(altura) from jugadores);
++----------+--------+
+| nombre   | altura |
++----------+--------+
+| Yao Ming | 7-6    |
++----------+--------+
+-- ()
+select conferencia, count(*) from equipos group by conferencia;
++-------------+----------+
+| conferencia | count(*) |
++-------------+----------+
+| East        |       15 |
+| West        |       15 |
++-------------+----------+
+-- ()
+select conferencia, count(*) from equipos where nombre like 'C%' group by conferencia;
++-------------+----------+
+| conferencia | count(*) |
++-------------+----------+
+| East        |        2 |
+| West        |        1 |
++-------------+----------+
+-- ()
+select procedencia, avg(peso) from jugadores where Procedencia='Spain';
++-------------+-----------+
+| procedencia | avg(peso) |
++-------------+-----------+
+| Spain       |  208.6000 |
++-------------+-----------+
+-- ()
+select Procedencia, avg(peso) from jugadores where Procedencia IN ('Spain', 'France') group by Procedencia;
++-------------+-----------+
+| Procedencia | avg(peso) |
++-------------+-----------+
+| Spain       |  208.6000 |
+| France      |  219.2500 |
++-------------+-----------+
+-- ()
+select nombre_equipo, avg(peso) from jugadores group by nombre_equipo having avg(peso)>230 order by avg(peso);
++---------------+-----------+
+| nombre_equipo | avg(peso) |
++---------------+-----------+
+| Jazz          |  230.0714 |
+| Knicks        |  235.4667 |
++---------------+-----------+
+-- (cuantos jugadores en total)
+select count(*) from jugadores;
++----------+
+| count(*) |
++----------+
+|      432 |
++----------+
+-- (cuantos jugadores en la conferencia oeste)
+select count(jugadores.nombre) from jugadores, equipos where equipos.Conferencia='west' and jugadores.nombre_equipo=equipos.nombre;
++-------------------------+
+| count(jugadores.nombre) |
++-------------------------+
+|                     216 |
++-------------------------+
+-- (igual que la anterior pero con una subconsulta en vez de con 2 tablas)
+select count(nombre) from jugadores where nombre_equipo IN(select nombre from equipos where conferencia='west');
++---------------+
+| count(nombre) |
++---------------+
+|           216 |
++---------------+
