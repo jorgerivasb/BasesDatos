@@ -331,3 +331,55 @@ select count(nombre) from jugadores where nombre_equipo IN(select nombre from eq
 +---------------+
 |           216 |
 +---------------+
+
+
+
+
+-- (19/12)
+-- ()
+show tables;
++---------------+
+| Tables_in_nba |
++---------------+
+| equipos       |
+| estadisticas  |
+| jugadores     |
+| partidos      |
++---------------+
+-- (nombre y ciudad de los equipos en los que juegan españoles)
+select nombre, ciudad from equipos where EXISTS (select * from jugadores where jugadores.procedencia='Spain' and jugadores.nombre_equipo=equipos.nombre); 
++---------------+-------------+
+| nombre        | ciudad      |
++---------------+-------------+
+| Grizzlies     | Memphis     |
+| Lakers        | Los Angeles |
+| Raptors       | Toronto     |
+| Trail Blazers | Portland    |
++---------------+-------------+
+-- (nos muestra los jugadores que pesan más que el jugador español más pesado)
+select nombre from jugadores where peso>all(select peso from jugadores where procedencia='Spain');
+-- (los bases que pesan más que algún pivot)
+select nombre from jugadores where posicion='G' and peso>any(select peso from jugadores where posicion='C');
++-------------+
+| nombre      |
++-------------+
+| Joe Johnson |
++-------------+
+-- ()
+select equipos.nombre, equipos.ciudad, jugadores.nombre from equipos, jugadores where jugadores.procedencia='Spain' and jugadores.nombre_equipo=equipos.nombre;
++---------------+-------------+---------------------+
+| nombre        | ciudad      | nombre              |
++---------------+-------------+---------------------+
+| Grizzlies     | Memphis     | Juan Carlos Navarro |
+| Lakers        | Los Angeles | Pau Gasol           |
+| Raptors       | Toronto     | Jose Calderon       |
+| Raptors       | Toronto     | Jorge Garbajosa     |
+| Trail Blazers | Portland    | Sergio Rodriguez    |
++---------------+-------------+---------------------+
+-- ()
+select jugadores.nombre, estadisticas.puntos_por_partido from estadisticas, jugadores where jugadores.procedencia='Spain' and jugadores.codigo=estadisticas.jugador and estadisticas.temporada='01/02';
++-----------+--------------------+
+| nombre    | puntos_por_partido |
++-----------+--------------------+
+| Pau Gasol |               17.6 |
++-----------+--------------------+
