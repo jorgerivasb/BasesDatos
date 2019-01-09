@@ -221,6 +221,16 @@ select CodigoCliente from Pagos where FechaPago like '2008%' group by CodigoClie
 |            14 |
 |            26 |
 +---------------+
+-- (otra manera de hacerlo)
+select CodigoCliente from Pagos where year(FechaPago)='2008' group by CodigoCliente;
++---------------+
+| CodigoCliente |
++---------------+
+|             1 |
+|            13 |
+|            14 |
+|            26 |
++---------------+
 
 14. Qué estados distintos puede tener un pedido.
 
