@@ -176,10 +176,160 @@ select CodigoEmpleadoRepVentas, count(CodigoEmpleadoRepVentas) from Clientes gro
 |                      31 |                              2 |
 +-------------------------+--------------------------------+
 11. Cuántos clientes no tienen asignado representante de ventas.
+
+select count(*) from Clientes where CodigoEmpleadoRepVentas is  NULL;
++----------+
+| count(*) |
++----------+
+|        0 |
++----------+
 12. Cuál han sido el primer y último pagos hechos por clientes.
+
+select min(FechaPago) from Pagos;
++----------------+
+| min(FechaPago) |
++----------------+
+| 2006-01-18     |
++----------------+
+
+select max(FechaPago) from Pagos;
++----------------+
+| max(FechaPago) |
++----------------+
+| 2009-03-26     |
++----------------+
+
 13. Código de cliente de los que hicieron pagos en 2008.
+
+select CodigoCliente from Pagos where FechaPago like '2008%';
++---------------+
+| CodigoCliente |
++---------------+
+|             1 |
+|             1 |
+|            13 |
+|            14 |
+|            26 |
++---------------+
+
+select CodigoCliente from Pagos where FechaPago like '2008%' group by CodigoCliente;
++---------------+
+| CodigoCliente |
++---------------+
+|             1 |
+|            13 |
+|            14 |
+|            26 |
++---------------+
+
 14. Qué estados distintos puede tener un pedido.
+
+select Estado from Pedidos group by Estado;
++-----------+
+| Estado    |
++-----------+
+| Entregado |
+| Rechazado |
+| Pendiente |
+| Pediente  |
++-----------+
+
 15. El número de pedido, código de cliente, fecha requerida y fecha de entrega de los pedidos _no_ entregados a tiempo.
+
+select CodigoPedido, CodigoCliente, FechaEsperada, FechaEntrega from Pedidos where FechaEsperada<FechaEntrega;
++--------------+---------------+---------------+--------------+
+| CodigoPedido | CodigoCliente | FechaEsperada | FechaEntrega |
++--------------+---------------+---------------+--------------+
+|            9 |             1 | 2008-12-27    | 2008-12-28   |
+|           13 |             7 | 2009-01-14    | 2009-01-15   |
+|           16 |             7 | 2009-01-07    | 2009-01-15   |
+|           17 |             7 | 2009-01-09    | 2009-01-11   |
+|           18 |             9 | 2009-01-06    | 2009-01-07   |
+|           22 |             9 | 2009-01-11    | 2009-01-13   |
+|           28 |             3 | 2009-02-17    | 2009-02-20   |
+|           31 |            13 | 2008-09-30    | 2008-10-04   |
+|           32 |             4 | 2007-01-19    | 2007-01-27   |
+|           38 |            19 | 2009-03-06    | 2009-03-07   |
+|           39 |            19 | 2009-03-07    | 2009-03-09   |
+|           40 |            19 | 2009-03-10    | 2009-03-13   |
+|           42 |            19 | 2009-03-23    | 2009-03-27   |
+|           43 |            23 | 2009-03-26    | 2009-03-28   |
+|           44 |            23 | 2009-03-27    | 2009-03-30   |
+|           45 |            23 | 2009-03-04    | 2009-03-07   |
+|           46 |            23 | 2009-03-04    | 2009-03-05   |
+|           49 |            26 | 2008-07-22    | 2008-07-23   |
+|           55 |            14 | 2009-01-10    | 2009-01-11   |
+|           60 |             1 | 2008-12-27    | 2008-12-28   |
+|           68 |             3 | 2009-02-17    | 2009-02-20   |
+|           92 |            27 | 2009-04-30    | 2009-05-03   |
+|           96 |            35 | 2008-04-12    | 2008-04-13   |
+|          103 |            30 | 2009-01-20    | 2009-01-24   |
+|          106 |            30 | 2009-05-15    | 2009-05-20   |
+|          112 |            36 | 2009-04-06    | 2009-05-07   |
+|          113 |            36 | 2008-11-09    | 2009-01-09   |
+|          114 |            36 | 2009-01-29    | 2009-01-31   |
+|          115 |            36 | 2009-01-26    | 2009-02-27   |
+|          123 |            30 | 2009-01-20    | 2009-01-24   |
+|          126 |            30 | 2009-05-15    | 2009-05-20   |
+|          128 |            38 | 2008-12-10    | 2008-12-29   |
++--------------+---------------+---------------+--------------+
+
 16. Cuántos productos existen en cada línea de pedido.
-17. Listar los 20 códigos de productos más pedidos ordenando por cantidad pedida.
+
+select NumeroLinea, sum(Cantidad) from DetallePedidos group by NumeroLinea;
++-------------+---------------+
+| NumeroLinea | sum(Cantidad) |
++-------------+---------------+
+|           3 |          1415 |
+|           1 |          2463 |
+|           2 |          2634 |
+|           4 |          1016 |
+|           5 |           476 |
+|           6 |           211 |
+|           7 |            23 |
+|           8 |            42 |
++-------------+---------------+
+
+17. Listar los 20 códigos de productos más pedidos ordenados por cantidad pedida.
+
+select CodigoProducto, Cantidad from DetallePedidos order by Cantidad Desc limit 0,20;
++----------------+----------+
+| CodigoProducto | Cantidad |
++----------------+----------+
+| AR-008         |      450 |
+| FR-17          |      423 |
+| AR-009         |      290 |
+| AR-009         |      250 |
+| AR-009         |      231 |
+| OR-214         |      212 |
+| FR-57          |      203 |
+| AR-006         |      180 |
+| AR-009         |      159 |
+| OR-247         |      150 |
+| OR-177         |      150 |
+| 30310          |      143 |
+| FR-29          |      120 |
+| FR-48          |      120 |
+| OR-157         |      113 |
+| AR-002         |      110 |
+| OR-139         |       80 |
+| OR-247         |       80 |
+| FR-106         |       80 |
+| AR-001         |       80 |
++----------------+----------+
+
 18. Número de pedido, código de cliente, fecha requerida y fecha de entrega de los pedidos cuya fecha de entrega ha sido al menos dos días antes de la fecha requerida.
+
+select CodigoPedido, CodigoCliente, FechaEsperada, FechaEntrega from Pedidos where FechaEntrega<=FechaEsperada-2;
++--------------+---------------+---------------+--------------+
+| CodigoPedido | CodigoCliente | FechaEsperada | FechaEntrega |
++--------------+---------------+---------------+--------------+
+|            2 |             5 | 2007-10-28    | 2007-10-26   |
+|           24 |            14 | 2008-07-31    | 2008-07-25   |
+|           30 |            13 | 2008-09-03    | 2008-08-31   |
+|           36 |            14 | 2008-12-15    | 2008-12-10   |
+|           53 |            13 | 2008-11-15    | 2008-11-09   |
+|           89 |            35 | 2007-12-13    | 2007-12-10   |
+|           91 |            27 | 2009-03-29    | 2009-03-27   |
+|           93 |            27 | 2009-05-30    | 2009-05-17   |
++--------------+---------------+---------------+--------------+
