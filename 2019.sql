@@ -343,3 +343,106 @@ select CodigoPedido, CodigoCliente, FechaEsperada, FechaEntrega from Pedidos whe
 |           91 |            27 | 2009-03-29    | 2009-03-27   |
 |           93 |            27 | 2009-05-30    | 2009-05-17   |
 +--------------+---------------+---------------+--------------+
+
+
+
+
+-- (10/10/19)
+
+1. Listado con el nombre de cada cliente y el nombre y apellido de su representante de ventas
+
+select Clientes.NombreCliente, Empleados.Nombre, Empleados.Apellido1 from Clientes inner join Empleados on Clientes.CodigoEmpleadoRepVentas = Empleados. CodigoEmpleado;
++--------------------------------+-----------------+------------+
+| NombreCliente                  | Nombre          | Apellido1  |
++--------------------------------+-----------------+------------+
+| DGPRODUCTIONS GARDEN           | Walter Santiago | Sanchez    |
+| Gardening Associates           | Walter Santiago | Sanchez    |
+| Gerudo Valley                  | Lorena          | Paxton     |
+| Tendo Garden                   | Lorena          | Paxton     |
+| Lasas S.A.                     | Mariano         | López      |
+| Beragua                        | Emmanuel        | Magaña     |
+| Club Golf Puerta del hierro    | Emmanuel        | Magaña     |
+| Naturagua                      | Emmanuel        | Magaña     |
+| DaraDistribuciones             | Emmanuel        | Magaña     |
+| Madrileña de riegos            | Emmanuel        | Magaña     |
+| Lasas S.A.                     | Mariano         | López      |
+| Camunas Jardines S.L.          | Mariano         | López      |
+| Dardena S.A.                   | Mariano         | López      |
+| Jardin de Flores               | Julian          | Bellinelli |
+| Flores Marivi                  | Felipe          | Rosas      |
+| Flowers, S.A                   | Felipe          | Rosas      |
+| Naturajardin                   | Julian          | Bellinelli |
+| Golf S.A.                      | José Manuel     | Martinez   |
+| AYMERICH GOLF MANAGEMENT, SL   | José Manuel     | Martinez   |
+| Aloha                          | José Manuel     | Martinez   |
+| El Prat                        | José Manuel     | Martinez   |
+| Sotogrande                     | José Manuel     | Martinez   |
+| Vivero Humanes                 | Julian          | Bellinelli |
+| Fuenla City                    | Felipe          | Rosas      |
+| Jardines y Mansiones CACTUS SL | Lucio           | Campoamor  |
+| Jardinerías Matías SL          | Lucio           | Campoamor  |
+| Agrojardin                     | Julian          | Bellinelli |
+| Top Campo                      | Felipe          | Rosas      |
+| Jardineria Sara                | Felipe          | Rosas      |
+| Campohermoso                   | Julian          | Bellinelli |
+| france telecom                 | Lionel          | Narvaez    |
+| Musée du Louvre                | Lionel          | Narvaez    |
+| Tutifruti S.A                  | Mariko          | Kishi      |
+| FLORES S.L.                    | Michael         | Bolton     |
+| THE MAGIC GARDEN               | Michael         | Bolton     |
+| El Jardin Viviente S.L         | Mariko          | Kishi      |
++--------------------------------+-----------------+------------+
+
+2. Nombre de los clientes que no hayan realizado pagos junto con el nombre de su representante de ventas
+
+select Clientes.NombreCliente, Empleados.Nombre, Empleados.Apellido1 from Clientes inner join Empleados inner join Pagos on 
+Clientes.CodigoEmpleadoRepVentas = Empleados. CodigoEmpleado and Clientes.CodigoCliente = Pagos.CodigoCliente where Pagos.Cantidad is NULL;
+
+Empty set 
+
+#3. Lista las ventas totales de los productos que hayan facturado más de 3000 euros. Mostrar nombre, unidades vendidas, total facturado y total facturado con Impuestos (IVA 21%)
+SELECT 
+    Productos.Nombre,
+    DetallePedidos.Cantidad,
+    DetallePedidos.Cantidad * DetallePedidos.PrecioUnidad,
+    DetallePedidos.Cantidad * DetallePedidos.PrecioUnidad * 1.21
+FROM
+    Productos
+        INNER JOIN
+    DetallePedidos ON DetallePedidos.CodigoProducto = Productos.CodigoProducto
+WHERE
+    DetallePedidos.Cantidad * Productos.PrecioVenta > 3000;
+-- (no podemos agruparlo, por ello en alguna columna de facturación la cantidad es menor a 3000, pero si sumamos las cantidades de todos los pedidos de estos productos 
+-- podemos ver como efectivamente sobrepasan dicha cantidad)
++-----------------------+----------+-----------------------------------------------------+----------------------------------------------------------+
+| Nombre                | Cantidad | DetallePedidos.Cantidad*DetallePedidos.PrecioUnidad | DetallePedidos.Cantidad*DetallePedidos.PrecioUnidad*1.21 |
++-----------------------+----------+-----------------------------------------------------+----------------------------------------------------------+
+| Chamaerops Humilis    |       67 |                                             4288.00 |                                                5188.4800 |
+| Bismarckia Nobilis    |       30 |                                             7980.00 |                                                9655.8000 |
+| Trachycarpus Fortunei |       80 |                                              640.00 |                                                 774.4000 |
+| Trachycarpus Fortunei |      150 |                                            69300.00 |                                               83853.0000 |
+| Dracaena Drago        |       50 |                                             3200.00 |                                                3872.0000 |
+| Beucarnea Recurvata   |       80 |                                             3120.00 |                                                3775.2000 |
+| Beucarnea Recurvata   |       70 |                                             4130.00 |                                                4997.3000 |
+| Trachycarpus Fortunei |       42 |                                              336.00 |                                                 406.5600 |
+| Kaki                  |       56 |                                             3920.00 |                                                4743.2000 |
+| Limonero 30/40        |       40 |                                             4000.00 |                                                4840.0000 |
+| Limonero 30/40        |       33 |                                             3300.00 |                                                3993.0000 |
++-----------------------+----------+-----------------------------------------------------+----------------------------------------------------------+
+
+#4. Lista la dirección de las oficinas que tengan clientes en Fuenlabrada
+
+SELECT 
+    Oficinas.LineaDireccion1
+FROM
+    Oficinas
+        INNER JOIN
+    Clientes ON Oficinas.Ciudad = Clientes.Region
+WHERE
+    Clientes.Ciudad = 'Fuenlabrada'
+GROUP BY Oficinas.LineaDireccion1;
++------------------------------+
+| LineaDireccion1              |
++------------------------------+
+| Bulevar Indalecio Prieto, 32 |
++------------------------------+
