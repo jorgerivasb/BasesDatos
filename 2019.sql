@@ -395,40 +395,36 @@ select Clientes.NombreCliente, Empleados.Nombre, Empleados.Apellido1 from Client
 
 2. Nombre de los clientes que no hayan realizado pagos junto con el nombre de su representante de ventas
 
-select Clientes.NombreCliente, Empleados.Nombre, Empleados.Apellido1 from Clientes inner join Empleados inner join Pagos on 
-Clientes.CodigoEmpleadoRepVentas = Empleados. CodigoEmpleado and Clientes.CodigoCliente = Pagos.CodigoCliente where Pagos.Cantidad is NULL;
-
-Empty set 
+SELECT 
+    Clientes.NombreCliente,
+    Empleados.Nombre,
+    Empleados.Apellido1
+FROM
+    Clientes
+        INNER JOIN
+    Empleados ON Clientes.CodigoEmpleadoRepVentas = Empleados.CodigoEmpleado
+        LEFT JOIN
+    Pagos ON Clientes.CodigoCliente = Pagos.CodigoCliente
+WHERE
+    Pagos.CodigoCliente IS NULL;
 
 #3. Lista las ventas totales de los productos que hayan facturado más de 3000 euros. Mostrar nombre, unidades vendidas, total facturado y total facturado con Impuestos (IVA 21%)
+
+SET sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
+
 SELECT 
     Productos.Nombre,
-    DetallePedidos.Cantidad,
-    DetallePedidos.Cantidad * DetallePedidos.PrecioUnidad,
-    DetallePedidos.Cantidad * DetallePedidos.PrecioUnidad * 1.21
+    Productos.CodigoProducto,
+    SUM(DetallePedidos.Cantidad) as 'cantidad',
+    SUM(DetallePedidos.Cantidad) * DetallePedidos.PrecioUnidad AS 'bruto',
+    SUM(DetallePedidos.Cantidad) * DetallePedidos.PrecioUnidad * 1.21 as 'IVA incluido'
 FROM
     Productos
         INNER JOIN
     DetallePedidos ON DetallePedidos.CodigoProducto = Productos.CodigoProducto
-WHERE
-    DetallePedidos.Cantidad * Productos.PrecioVenta > 3000;
--- (no podemos agruparlo, por ello en alguna columna de facturación la cantidad es menor a 3000, pero si sumamos las cantidades de todos los pedidos de estos productos 
--- podemos ver como efectivamente sobrepasan dicha cantidad)
-+-----------------------+----------+-----------------------------------------------------+----------------------------------------------------------+
-| Nombre                | Cantidad | DetallePedidos.Cantidad*DetallePedidos.PrecioUnidad | DetallePedidos.Cantidad*DetallePedidos.PrecioUnidad*1.21 |
-+-----------------------+----------+-----------------------------------------------------+----------------------------------------------------------+
-| Chamaerops Humilis    |       67 |                                             4288.00 |                                                5188.4800 |
-| Bismarckia Nobilis    |       30 |                                             7980.00 |                                                9655.8000 |
-| Trachycarpus Fortunei |       80 |                                              640.00 |                                                 774.4000 |
-| Trachycarpus Fortunei |      150 |                                            69300.00 |                                               83853.0000 |
-| Dracaena Drago        |       50 |                                             3200.00 |                                                3872.0000 |
-| Beucarnea Recurvata   |       80 |                                             3120.00 |                                                3775.2000 |
-| Beucarnea Recurvata   |       70 |                                             4130.00 |                                                4997.3000 |
-| Trachycarpus Fortunei |       42 |                                              336.00 |                                                 406.5600 |
-| Kaki                  |       56 |                                             3920.00 |                                                4743.2000 |
-| Limonero 30/40        |       40 |                                             4000.00 |                                                4840.0000 |
-| Limonero 30/40        |       33 |                                             3300.00 |                                                3993.0000 |
-+-----------------------+----------+-----------------------------------------------------+----------------------------------------------------------+
+    group by DetallePedidos.CodigoProducto
+HAVING bruto > 3000
+order by 4 desc;
 
 #4. Lista la dirección de las oficinas que tengan clientes en Fuenlabrada
 
@@ -437,12 +433,32 @@ SELECT
 FROM
     Oficinas
         INNER JOIN
-    Clientes ON Oficinas.Ciudad = Clientes.Region
+    Empleados ON Oficinas.CodigoOficina = Empleados.CodigoOficina
+		INNER JOIN Clientes ON Empleados.CodigoEmpleado=Clientes.CodigoEmpleadoRepVentas
 WHERE
-    Clientes.Ciudad = 'Fuenlabrada'
-GROUP BY Oficinas.LineaDireccion1;
-+------------------------------+
-| LineaDireccion1              |
-+------------------------------+
-| Bulevar Indalecio Prieto, 32 |
-+------------------------------+
+    Clientes.Ciudad = 'Fuenlabrada';
+
+
+
+-- (funciones de fecha y hora)
+
+select CURDATE();
++------------+
+| CURDATE()  |
++------------+
+| 2019-01-16 |
++------------+
+
+select CURTIME();
++-----------+
+| CURTIME() |
++-----------+
+| 20:10:59  |
++-----------+
+
+select NOW();
++---------------------+
+| NOW()               |
++---------------------+
+| 2019-01-16 20:11:09 |
++---------------------+
