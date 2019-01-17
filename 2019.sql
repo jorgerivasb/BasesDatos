@@ -438,6 +438,44 @@ FROM
 WHERE
     Clientes.Ciudad = 'Fuenlabrada';
 
+-- ()
+select E.CodigoEmpleado, E.Nombre, E.Apellido1, E.Apellido2, E.CodigoJefe, J.Nombre, J.Apellido1, J.Apellido2 from Empleados E inner join Empleados J on J.CodigoEmpleado=E.CodigoJefe;
++----------------+-----------------+------------+-----------+------------+----------+------------+-----------+
+| CodigoEmpleado | Nombre          | Apellido1  | Apellido2 | CodigoJefe | Nombre   | Apellido1  | Apellido2 |
++----------------+-----------------+------------+-----------+------------+----------+------------+-----------+
+|              2 | Ruben           | López      | Martinez  |          1 | Marcos   | Magaña     | Perez     |
+|              3 | Alberto         | Soria      | Carrasco  |          2 | Ruben    | López      | Martinez  |
+|              4 | Maria           | Solís      | Jerez     |          2 | Ruben    | López      | Martinez  |
+|              5 | Felipe          | Rosas      | Marquez   |          3 | Alberto  | Soria      | Carrasco  |
+|              6 | Juan Carlos     | Ortiz      | Serrano   |          3 | Alberto  | Soria      | Carrasco  |
+|              7 | Carlos          | Soria      | Jimenez   |          3 | Alberto  | Soria      | Carrasco  |
+|              8 | Mariano         | López      | Murcia    |          7 | Carlos   | Soria      | Jimenez   |
+|              9 | Lucio           | Campoamor  | Martín    |          7 | Carlos   | Soria      | Jimenez   |
+|             10 | Hilario         | Rodriguez  | Huertas   |          7 | Carlos   | Soria      | Jimenez   |
+|             11 | Emmanuel        | Magaña     | Perez     |          3 | Alberto  | Soria      | Carrasco  |
+|             12 | José Manuel     | Martinez   | De la Osa |         11 | Emmanuel | Magaña     | Perez     |
+|             13 | David           | Palma      | Aceituno  |         11 | Emmanuel | Magaña     | Perez     |
+|             14 | Oscar           | Palma      | Aceituno  |         11 | Emmanuel | Magaña     | Perez     |
+|             15 | Francois        | Fignon     |           |          3 | Alberto  | Soria      | Carrasco  |
+|             16 | Lionel          | Narvaez    |           |         15 | Francois | Fignon     |           |
+|             17 | Laurent         | Serra      |           |         15 | Francois | Fignon     |           |
+|             18 | Michael         | Bolton     |           |          3 | Alberto  | Soria      | Carrasco  |
+|             19 | Walter Santiago | Sanchez    | Lopez     |         18 | Michael  | Bolton     |           |
+|             20 | Hilary          | Washington |           |          3 | Alberto  | Soria      | Carrasco  |
+|             21 | Marcus          | Paxton     |           |         20 | Hilary   | Washington |           |
+|             22 | Lorena          | Paxton     |           |         20 | Hilary   | Washington |           |
+|             23 | Nei             | Nishikori  |           |          3 | Alberto  | Soria      | Carrasco  |
+|             24 | Narumi          | Riko       |           |         23 | Nei      | Nishikori  |           |
+|             25 | Takuma          | Nomura     |           |         23 | Nei      | Nishikori  |           |
+|             26 | Amy             | Johnson    |           |          3 | Alberto  | Soria      | Carrasco  |
+|             27 | Larry           | Westfalls  |           |         26 | Amy      | Johnson    |           |
+|             28 | John            | Walton     |           |         26 | Amy      | Johnson    |           |
+|             29 | Kevin           | Fallmer    |           |          3 | Alberto  | Soria      | Carrasco  |
+|             30 | Julian          | Bellinelli |           |         29 | Kevin    | Fallmer    |           |
+|             31 | Mariko          | Kishi      |           |         29 | Kevin    | Fallmer    |           |
++----------------+-----------------+------------+-----------+------------+----------+------------+-----------+
+
+
 
 
 -- (funciones de fecha y hora)
