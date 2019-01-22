@@ -500,3 +500,395 @@ select NOW();
 +---------------------+
 | 2019-01-16 20:11:09 |
 +---------------------+
+
+
+
+
+-- (repaso 22/01)
+
+1. Listado de clientes indicando nombre del cliente y cuántos pedidos ha efectuado.
+-- (creamos una vista para hacerlo más sencillo)
+
+create view ejer1 as select Clientes.NombreCliente, Pedidos.CodigoCliente from Clientes, Pedidos where Pedidos.CodigoCliente=Clientes.CodigoCliente;
+
+select count(*), NombreCliente from ejer1 group by CodigoCliente; 
++----------+--------------------------------+
+| count(*) | NombreCliente                  |
++----------+--------------------------------+
+|       11 | DGPRODUCTIONS GARDEN           |
+|        9 | Gardening Associates           |
+|        5 | Gerudo Valley                  |
+|        5 | Tendo Garden                   |
+|        5 | Beragua                        |
+|        5 | Naturagua                      |
+|        5 | Camunas Jardines S.L.          |
+|        5 | Dardena S.A.                   |
+|        5 | Jardin de Flores               |
+|       10 | Flores Marivi                  |
+|        5 | Golf S.A.                      |
+|        5 | Sotogrande                     |
+|        5 | Jardines y Mansiones CACTUS SL |
+|        5 | Jardinerías Matías SL          |
+|        5 | Agrojardin                     |
+|       10 | Jardineria Sara                |
+|        5 | Tutifruti S.A                  |
+|        5 | FLORES S.L.                    |
+|        5 | El Jardin Viviente S.L         |
++----------+--------------------------------+
+
+2. Listado con los nombres de los clientes y el total pagado por cada uno de ellos.
+
+select Clientes.NombreCliente, sum(DetallePedidos.Cantidad) * DetallePedidos.PrecioUnidad as 'Gasto' from Pedidos inner join Clientes on Clientes.CodigoCliente=Pedidos.CodigoCliente inner join DetallePedidos on DetallePedidos.CodigoPedido=Pedidos.CodigoPedido group by Clientes.NombreCliente, DetallePedidos.PrecioUnidad;
++--------------------------------+----------+
+| NombreCliente                  | Gasto    |
++--------------------------------+----------+
+| DGPRODUCTIONS GARDEN           |    33.00 |
+| DGPRODUCTIONS GARDEN           |    32.00 |
+| DGPRODUCTIONS GARDEN           |  1000.00 |
+| DGPRODUCTIONS GARDEN           |  1000.00 |
+| DGPRODUCTIONS GARDEN           |  1280.00 |
+| DGPRODUCTIONS GARDEN           |  1365.00 |
+| DGPRODUCTIONS GARDEN           |  1035.00 |
+| DGPRODUCTIONS GARDEN           |   420.00 |
+| Gardening Associates           |   350.00 |
+| Gardening Associates           |  2250.00 |
+| Gardening Associates           |   320.00 |
+| Gardening Associates           |   675.00 |
+| Gardening Associates           |   504.00 |
+| Gardening Associates           |   792.00 |
+| Gardening Associates           |   798.00 |
+| Gardening Associates           |   462.00 |
+| Gardening Associates           |  1170.00 |
+| Gardening Associates           |   320.00 |
+| Gardening Associates           |  3285.00 |
+| Gerudo Valley                  |   182.00 |
+| Gerudo Valley                  |    75.00 |
+| Gerudo Valley                  |  2900.00 |
+| Gerudo Valley                  |   100.00 |
+| Gerudo Valley                  |   846.00 |
+| Gerudo Valley                  |  3024.00 |
+| Gerudo Valley                  |  3610.00 |
+| Gerudo Valley                  | 69300.00 |
+| Gerudo Valley                  |   392.00 |
+| Gerudo Valley                  |   348.00 |
+| Gerudo Valley                  |   792.00 |
+| Gerudo Valley                  |   280.00 |
+| Tendo Garden                   |   980.00 |
+| Tendo Garden                   |   460.00 |
+| Tendo Garden                   |   285.00 |
+| Tendo Garden                   |   322.00 |
+| Tendo Garden                   |    87.00 |
+| Tendo Garden                   |   488.00 |
+| Tendo Garden                   |   465.00 |
+| Tendo Garden                   |   114.00 |
+| Tendo Garden                   |  4288.00 |
+| Tendo Garden                   |  2310.00 |
+| Tendo Garden                   |  1611.00 |
+| Tendo Garden                   |  7980.00 |
+| Tendo Garden                   |   975.00 |
+| Tendo Garden                   |   600.00 |
+| Tendo Garden                   |   380.00 |
+| Tendo Garden                   |  1239.00 |
+| Tendo Garden                   |   110.00 |
+| Tendo Garden                   |  1100.00 |
+| Beragua                        |   308.00 |
+| Beragua                        |   500.00 |
+| Beragua                        |    88.00 |
+| Beragua                        |   741.00 |
+| Beragua                        |    52.00 |
+| Beragua                        |    12.00 |
+| Beragua                        |   150.00 |
+| Beragua                        |   204.00 |
+| Beragua                        |   135.00 |
+| Beragua                        |   110.00 |
+| Beragua                        |    90.00 |
+| Naturagua                      |   252.00 |
+| Naturagua                      |   176.00 |
+| Naturagua                      |    66.00 |
+| Naturagua                      |    72.00 |
+| Naturagua                      |    32.00 |
+| Naturagua                      |    65.00 |
+| Naturagua                      |   266.00 |
+| Camunas Jardines S.L.          |    10.00 |
+| Camunas Jardines S.L.          |    64.00 |
+| Camunas Jardines S.L.          |    38.00 |
+| Camunas Jardines S.L.          |   124.00 |
+| Camunas Jardines S.L.          |   450.00 |
+| Camunas Jardines S.L.          |    25.00 |
+| Camunas Jardines S.L.          |    50.00 |
+| Camunas Jardines S.L.          |    20.00 |
+| Camunas Jardines S.L.          |   174.00 |
+| Camunas Jardines S.L.          |    49.00 |
+| Camunas Jardines S.L.          |    70.00 |
+| Camunas Jardines S.L.          |    22.00 |
+| Camunas Jardines S.L.          |   115.00 |
+| Camunas Jardines S.L.          |   180.00 |
+| Camunas Jardines S.L.          |     6.00 |
+| Camunas Jardines S.L.          |    60.00 |
+| Camunas Jardines S.L.          |    16.00 |
+| Camunas Jardines S.L.          |   546.00 |
+| Camunas Jardines S.L.          |   147.00 |
+| Camunas Jardines S.L.          |    26.00 |
+| Camunas Jardines S.L.          |    54.00 |
+| Dardena S.A.                   |    45.00 |
+| Dardena S.A.                   |   217.00 |
+| Dardena S.A.                   |   200.00 |
+| Dardena S.A.                   |   280.00 |
+| Dardena S.A.                   |   112.00 |
+| Dardena S.A.                   |   620.00 |
+| Dardena S.A.                   |   222.00 |
+| Dardena S.A.                   |    90.00 |
+| Dardena S.A.                   |    60.00 |
+| Dardena S.A.                   |   195.00 |
+| Dardena S.A.                   |    42.00 |
+| Dardena S.A.                   |   470.00 |
+| Dardena S.A.                   |    20.00 |
+| Dardena S.A.                   |    66.00 |
+| Dardena S.A.                   |    15.00 |
+| Dardena S.A.                   |   532.00 |
+| Dardena S.A.                   |   512.00 |
+| Dardena S.A.                   |   462.00 |
+| Jardin de Flores               |  4970.00 |
+| Jardin de Flores               |  2176.00 |
+| Jardin de Flores               |   536.00 |
+| Jardin de Flores               |   310.00 |
+| Jardin de Flores               |  1936.00 |
+| Jardin de Flores               |  1130.00 |
+| Jardin de Flores               |   315.00 |
+| Jardin de Flores               |   588.00 |
+| Jardin de Flores               |   120.00 |
+| Flores Marivi                  |   150.00 |
+| Flores Marivi                  |  1920.00 |
+| Flores Marivi                  |   440.00 |
+| Flores Marivi                  |   360.00 |
+| Flores Marivi                  |   209.00 |
+| Flores Marivi                  |   660.00 |
+| Flores Marivi                  |   424.00 |
+| Flores Marivi                  |   236.00 |
+| Golf S.A.                      |    98.00 |
+| Golf S.A.                      |   108.00 |
+| Golf S.A.                      |    26.00 |
+| Sotogrande                     |    24.00 |
+| Sotogrande                     |    84.00 |
+| Sotogrande                     |    99.00 |
+| Sotogrande                     |    65.00 |
+| Jardines y Mansiones CACTUS SL |    18.00 |
+| Jardines y Mansiones CACTUS SL |    25.00 |
+| Jardines y Mansiones CACTUS SL |  6016.00 |
+| Jardines y Mansiones CACTUS SL |  2205.00 |
+| Jardines y Mansiones CACTUS SL |   950.00 |
+| Jardines y Mansiones CACTUS SL |  1220.00 |
+| Jardines y Mansiones CACTUS SL |    25.00 |
+| Jardines y Mansiones CACTUS SL |   570.00 |
+| Jardines y Mansiones CACTUS SL |  3120.00 |
+| Jardines y Mansiones CACTUS SL |  4130.00 |
+| Jardinerías Matías SL          |    41.00 |
+| Jardinerías Matías SL          |  1133.00 |
+| Jardinerías Matías SL          |   182.00 |
+| Jardinerías Matías SL          |   630.00 |
+| Jardinerías Matías SL          |   276.00 |
+| Jardinerías Matías SL          |  5300.00 |
+| Jardinerías Matías SL          |   630.00 |
+| Jardinerías Matías SL          |   225.00 |
+| Jardinerías Matías SL          |    96.00 |
+| Jardinerías Matías SL          |   168.00 |
+| Jardinerías Matías SL          |  2291.00 |
+| Agrojardin                     |   300.00 |
+| Agrojardin                     |  4000.00 |
+| Agrojardin                     |   423.00 |
+| Agrojardin                     |  1350.00 |
+| Agrojardin                     |   240.00 |
+| Agrojardin                     |  2176.00 |
+| Jardineria Sara                |    96.00 |
+| Jardineria Sara                |   208.00 |
+| Jardineria Sara                |   630.00 |
+| Jardineria Sara                |  1130.00 |
+| Jardineria Sara                |  1344.00 |
+| Jardineria Sara                |   162.00 |
+| Jardineria Sara                |   231.00 |
+| Jardineria Sara                |   846.00 |
+| Jardineria Sara                |  1716.00 |
+| Jardineria Sara                |  1500.00 |
+| Tutifruti S.A                  |   544.00 |
+| Tutifruti S.A                  |   280.00 |
+| Tutifruti S.A                  |   480.00 |
+| Tutifruti S.A                  |   245.00 |
+| Tutifruti S.A                  |   308.00 |
+| Tutifruti S.A                  |   180.00 |
+| Tutifruti S.A                  |  1050.00 |
+| Tutifruti S.A                  |   126.00 |
+| Tutifruti S.A                  |   108.00 |
+| El Jardin Viviente S.L         |   140.00 |
+| El Jardin Viviente S.L         |   108.00 |
+| El Jardin Viviente S.L         |   216.00 |
+| El Jardin Viviente S.L         |   200.00 |
+| El Jardin Viviente S.L         |    65.00 |
+| El Jardin Viviente S.L         |    36.00 |
+| El Jardin Viviente S.L         |    71.00 |
+| El Jardin Viviente S.L         |    98.00 |
+| El Jardin Viviente S.L         |    45.00 |
+| El Jardin Viviente S.L         |    70.00 |
+| El Jardin Viviente S.L         |    30.00 |
+| El Jardin Viviente S.L         |    32.00 |
+| El Jardin Viviente S.L         |    24.00 |
+| El Jardin Viviente S.L         |    36.00 |
++--------------------------------+----------+
+
+-- (como no nos agrupa por nombre de cliente probamos de otra manera)
+create view ejer22 as select Clientes.NombreCliente, sum(DetallePedidos.Cantidad) * DetallePedidos.PrecioUnidad as 'Gasto' from Pedidos inner join Clientes on Clientes.CodigoCliente=Pedidos.CodigoCliente inner join DetallePedidos on DetallePedidos.CodigoPedido=Pedidos.CodigoPedido group by Clientes.NombreCliente, DetallePedidos.PrecioUnidad;
+
+select NombreCliente, sum(Gasto) from ejer22 group by NombreCliente;
++--------------------------------+------------+
+| NombreCliente                  | sum(Gasto) |
++--------------------------------+------------+
+| DGPRODUCTIONS GARDEN           |    6165.00 |
+| Gardening Associates           |   10926.00 |
+| Gerudo Valley                  |   81849.00 |
+| Tendo Garden                   |   23794.00 |
+| Beragua                        |    2390.00 |
+| Naturagua                      |     929.00 |
+| Camunas Jardines S.L.          |    2246.00 |
+| Dardena S.A.                   |    4160.00 |
+| Jardin de Flores               |   12081.00 |
+| Flores Marivi                  |    4399.00 |
+| Golf S.A.                      |     232.00 |
+| Sotogrande                     |     272.00 |
+| Jardines y Mansiones CACTUS SL |   18279.00 |
+| Jardinerías Matías SL          |   10972.00 |
+| Agrojardin                     |    8489.00 |
+| Jardineria Sara                |    7863.00 |
+| Tutifruti S.A                  |    3321.00 |
+| El Jardin Viviente S.L         |    1171.00 |
++--------------------------------+------------+
+
+3. El nombre de los clientes que hayan hecho pedidos en 2009.
+
+select Clientes.NombreCliente from Clientes inner join Pedidos on Clientes.CodigoCliente=Pedidos.CodigoCliente where Pedidos.FechaPedido like '2008%' group by Clientes.NombreCliente;
++--------------------------------+
+| NombreCliente                  |
++--------------------------------+
+| Tendo Garden                   |
+| DGPRODUCTIONS GARDEN           |
+| Dardena S.A.                   |
+| Camunas Jardines S.L.          |
+| Gerudo Valley                  |
+| Jardines y Mansiones CACTUS SL |
+| Jardin de Flores               |
+| Tutifruti S.A                  |
+| Flores Marivi                  |
+| FLORES S.L.                    |
+| El Jardin Viviente S.L         |
++--------------------------------+
+
+4. El nombre del cliente y el nombre y apellido de sus representantes de los clientes de Madrid.
+
+select Clientes.NombreCliente, Empleados.Nombre, Empleados.Apellido1 from Clientes inner join Empleados on Clientes.CodigoEmpleadoRepVentas=Empleados.CodigoEmpleado where Clientes.Ciudad='Madrid';;
++--------------------------------+----------+------------+
+| NombreCliente                  | Nombre   | Apellido1  |
++--------------------------------+----------+------------+
+| Beragua                        | Emmanuel | Magaña     |
+| Club Golf Puerta del hierro    | Emmanuel | Magaña     |
+| Naturagua                      | Emmanuel | Magaña     |
+| DaraDistribuciones             | Emmanuel | Magaña     |
+| Madrileña de riegos            | Emmanuel | Magaña     |
+| Dardena S.A.                   | Mariano  | López      |
+| Jardin de Flores               | Julian   | Bellinelli |
+| Naturajardin                   | Julian   | Bellinelli |
+| Jardines y Mansiones CACTUS SL | Lucio    | Campoamor  |
+| Jardinerías Matías SL          | Lucio    | Campoamor  |
+| FLORES S.L.                    | Michael  | Bolton     |
++--------------------------------+----------+------------+
+
+5. Un listado de clientes con el nombre de su representante y la ciudad donde está su oficina.
+
+select Clientes.NombreCliente, Empleados.Nombre, Oficinas.Ciudad from Clientes inner join Empleados on Clientes.CodigoEmpleadoRepVentas=Empleados.CodigoEmpleado inner join Oficinas on Empleados.CodigoOficina=Oficinas.CodigoOficina; 
++--------------------------------+-----------------+----------------------+
+| NombreCliente                  | Nombre          | Ciudad               |
++--------------------------------+-----------------+----------------------+
+| Beragua                        | Emmanuel        | Barcelona            |
+| Club Golf Puerta del hierro    | Emmanuel        | Barcelona            |
+| Naturagua                      | Emmanuel        | Barcelona            |
+| DaraDistribuciones             | Emmanuel        | Barcelona            |
+| Madrileña de riegos            | Emmanuel        | Barcelona            |
+| Golf S.A.                      | José Manuel     | Barcelona            |
+| AYMERICH GOLF MANAGEMENT, SL   | José Manuel     | Barcelona            |
+| Aloha                          | José Manuel     | Barcelona            |
+| El Prat                        | José Manuel     | Barcelona            |
+| Sotogrande                     | José Manuel     | Barcelona            |
+| Gerudo Valley                  | Lorena          | Boston               |
+| Tendo Garden                   | Lorena          | Boston               |
+| Lasas S.A.                     | Mariano         | Madrid               |
+| Lasas S.A.                     | Mariano         | Madrid               |
+| Camunas Jardines S.L.          | Mariano         | Madrid               |
+| Dardena S.A.                   | Mariano         | Madrid               |
+| Jardines y Mansiones CACTUS SL | Lucio           | Madrid               |
+| Jardinerías Matías SL          | Lucio           | Madrid               |
+| france telecom                 | Lionel          | Paris                |
+| Musée du Louvre                | Lionel          | Paris                |
+| FLORES S.L.                    | Michael         | San Francisco        |
+| THE MAGIC GARDEN               | Michael         | San Francisco        |
+| DGPRODUCTIONS GARDEN           | Walter Santiago | San Francisco        |
+| Gardening Associates           | Walter Santiago | San Francisco        |
+| Jardin de Flores               | Julian          | Sydney               |
+| Naturajardin                   | Julian          | Sydney               |
+| Vivero Humanes                 | Julian          | Sydney               |
+| Agrojardin                     | Julian          | Sydney               |
+| Campohermoso                   | Julian          | Sydney               |
+| Tutifruti S.A                  | Mariko          | Sydney               |
+| El Jardin Viviente S.L         | Mariko          | Sydney               |
+| Flores Marivi                  | Felipe          | Talavera de la Reina |
+| Flowers, S.A                   | Felipe          | Talavera de la Reina |
+| Fuenla City                    | Felipe          | Talavera de la Reina |
+| Top Campo                      | Felipe          | Talavera de la Reina |
+| Jardineria Sara                | Felipe          | Talavera de la Reina |
++--------------------------------+-----------------+----------------------+
+
+6. Nombre, apellidos, oficina y cargo de los empleados que no son reprentantes de ventas.
+
+select Empleados.Nombre, Empleados.Apellido1, Empleados.Puesto, Oficinas.Ciudad from Empleados inner join Oficinas on Empleados.CodigoOficina=Oficinas.CodigoOficina where Empleados.Puesto <> 'Representante Ventas';
++----------+------------+-----------------------+----------------------+
+| Nombre   | Apellido1  | Puesto                | Ciudad               |
++----------+------------+-----------------------+----------------------+
+| Emmanuel | Magaña     | Director Oficina      | Barcelona            |
+| Hilary   | Washington | Director Oficina      | Boston               |
+| Amy      | Johnson    | Director Oficina      | Londres              |
+| Carlos   | Soria      | Director Oficina      | Madrid               |
+| Francois | Fignon     | Director Oficina      | Paris                |
+| Michael  | Bolton     | Director Oficina      | San Francisco        |
+| Kevin    | Fallmer    | Director Oficina      | Sydney               |
+| Marcos   | Magaña     | Director General      | Talavera de la Reina |
+| Ruben    | López      | Subdirector Marketing | Talavera de la Reina |
+| Alberto  | Soria      | Subdirector Ventas    | Talavera de la Reina |
+| Maria    | Solís      | Secretaria            | Talavera de la Reina |
+| Nei      | Nishikori  | Director Oficina      | Tokyo                |
++----------+------------+-----------------------+----------------------+
+
+7. Número de empleados de cada oficina y ciudad donde está situada.
+
+select Oficinas.CodigoOficina, Oficinas.Ciudad, count(Empleados.CodigoEmpleado) from Oficinas inner join Empleados on Oficinas.CodigoOficina=Empleados.CodigoOficina group by CodigoOficina;
++---------------+----------------------+---------------------------------+
+| CodigoOficina | Ciudad               | count(Empleados.CodigoEmpleado) |
++---------------+----------------------+---------------------------------+
+| BCN-ES        | Barcelona            |                               4 |
+| BOS-USA       | Boston               |                               3 |
+| LON-UK        | Londres              |                               3 |
+| MAD-ES        | Madrid               |                               4 |
+| PAR-FR        | Paris                |                               3 |
+| SFC-USA       | San Francisco        |                               2 |
+| SYD-AU        | Sydney               |                               3 |
+| TAL-ES        | Talavera de la Reina |                               6 |
+| TOK-JP        | Tokyo                |                               3 |
++---------------+----------------------+---------------------------------+
+
+8. Listado con el nombre de los empleados y el nombre de sus jefes.
+9. Media de unidades en stock de los productos agrupados por gama de producto.
+10. Clientes que residen en ciudades donde hay oficina, indicando dirección de la oficina.
+11. Clientes que residen en ciudades donde no hay oficina, indicando la ciudad en la que viven
+12. Número de clientes asignados a cada representante de ventas.
+13. Listado con el precio total de cada pedido.
+14. Clientes que hayan hecho pedidos en 2008 por importe superior a 2000 euros.
+15. Cuántos pedidos tiene cada cliente en cada estado.
+16. Los clientes que hayan pedido más de 200 unidades de cualquier producto.
+17. Cliente que hizo el pedido de mayor cuantía e importe.
+18. Cliente que hizo el pedido de menor cuantía e importe.
+
