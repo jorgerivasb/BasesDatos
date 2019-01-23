@@ -509,9 +509,21 @@ select NOW();
 1. Listado de clientes indicando nombre del cliente y cuántos pedidos ha efectuado.
 -- (creamos una vista para hacerlo más sencillo)
 
-create view ejer1 as select Clientes.NombreCliente, Pedidos.CodigoCliente from Clientes, Pedidos where Pedidos.CodigoCliente=Clientes.CodigoCliente;
+CREATE VIEW ejer1 AS
+    SELECT 
+        Clientes.NombreCliente, Pedidos.CodigoCliente
+    FROM
+        Clientes,
+        Pedidos
+    WHERE
+        Pedidos.CodigoCliente = Clientes.CodigoCliente;
 
-select count(*), NombreCliente from ejer1 group by CodigoCliente; 
+-- ()
+SELECT 
+    COUNT(*), NombreCliente
+FROM
+    ejer1
+GROUP BY CodigoCliente; 
 +----------+--------------------------------+
 | count(*) | NombreCliente                  |
 +----------+--------------------------------+
@@ -538,7 +550,16 @@ select count(*), NombreCliente from ejer1 group by CodigoCliente;
 
 2. Listado con los nombres de los clientes y el total pagado por cada uno de ellos.
 
-select Clientes.NombreCliente, sum(DetallePedidos.Cantidad) * DetallePedidos.PrecioUnidad as 'Gasto' from Pedidos inner join Clientes on Clientes.CodigoCliente=Pedidos.CodigoCliente inner join DetallePedidos on DetallePedidos.CodigoPedido=Pedidos.CodigoPedido group by Clientes.NombreCliente, DetallePedidos.PrecioUnidad;
+SELECT 
+    Clientes.NombreCliente,
+    SUM(DetallePedidos.Cantidad) * DetallePedidos.PrecioUnidad AS 'Gasto'
+FROM
+    Pedidos
+        INNER JOIN
+    Clientes ON Clientes.CodigoCliente = Pedidos.CodigoCliente
+        INNER JOIN
+    DetallePedidos ON DetallePedidos.CodigoPedido = Pedidos.CodigoPedido
+GROUP BY Clientes.NombreCliente , DetallePedidos.PrecioUnidad;
 +--------------------------------+----------+
 | NombreCliente                  | Gasto    |
 +--------------------------------+----------+
@@ -735,9 +756,24 @@ select Clientes.NombreCliente, sum(DetallePedidos.Cantidad) * DetallePedidos.Pre
 +--------------------------------+----------+
 
 -- (como no nos agrupa por nombre de cliente probamos de otra manera)
-create view ejer22 as select Clientes.NombreCliente, sum(DetallePedidos.Cantidad) * DetallePedidos.PrecioUnidad as 'Gasto' from Pedidos inner join Clientes on Clientes.CodigoCliente=Pedidos.CodigoCliente inner join DetallePedidos on DetallePedidos.CodigoPedido=Pedidos.CodigoPedido group by Clientes.NombreCliente, DetallePedidos.PrecioUnidad;
-
-select NombreCliente, sum(Gasto) from ejer22 group by NombreCliente;
+CREATE VIEW ejer22 AS
+    SELECT 
+        Clientes.NombreCliente,
+        SUM(DetallePedidos.Cantidad) * DetallePedidos.PrecioUnidad AS 'Gasto'
+    FROM
+        Pedidos
+            INNER JOIN
+        Clientes ON Clientes.CodigoCliente = Pedidos.CodigoCliente
+            INNER JOIN
+        DetallePedidos ON DetallePedidos.CodigoPedido = Pedidos.CodigoPedido
+    GROUP BY Clientes.NombreCliente , DetallePedidos.PrecioUnidad;
+    
+-- ()
+SELECT 
+    NombreCliente, SUM(Gasto)
+FROM
+    ejer22
+GROUP BY NombreCliente;
 +--------------------------------+------------+
 | NombreCliente                  | sum(Gasto) |
 +--------------------------------+------------+
@@ -763,7 +799,15 @@ select NombreCliente, sum(Gasto) from ejer22 group by NombreCliente;
 
 3. El nombre de los clientes que hayan hecho pedidos en 2009.
 
-select Clientes.NombreCliente from Clientes inner join Pedidos on Clientes.CodigoCliente=Pedidos.CodigoCliente where Pedidos.FechaPedido like '2008%' group by Clientes.NombreCliente;
+SELECT 
+    Clientes.NombreCliente
+FROM
+    Clientes
+        INNER JOIN
+    Pedidos ON Clientes.CodigoCliente = Pedidos.CodigoCliente
+WHERE
+    Pedidos.FechaPedido LIKE '2008%'
+GROUP BY Clientes.NombreCliente;
 +--------------------------------+
 | NombreCliente                  |
 +--------------------------------+
@@ -782,7 +826,16 @@ select Clientes.NombreCliente from Clientes inner join Pedidos on Clientes.Codig
 
 4. El nombre del cliente y el nombre y apellido de sus representantes de los clientes de Madrid.
 
-select Clientes.NombreCliente, Empleados.Nombre, Empleados.Apellido1 from Clientes inner join Empleados on Clientes.CodigoEmpleadoRepVentas=Empleados.CodigoEmpleado where Clientes.Ciudad='Madrid';;
+SELECT 
+    Clientes.NombreCliente,
+    Empleados.Nombre,
+    Empleados.Apellido1
+FROM
+    Clientes
+        INNER JOIN
+    Empleados ON Clientes.CodigoEmpleadoRepVentas = Empleados.CodigoEmpleado
+WHERE
+    Clientes.Ciudad = 'Madrid';
 +--------------------------------+----------+------------+
 | NombreCliente                  | Nombre   | Apellido1  |
 +--------------------------------+----------+------------+
@@ -801,7 +854,14 @@ select Clientes.NombreCliente, Empleados.Nombre, Empleados.Apellido1 from Client
 
 5. Un listado de clientes con el nombre de su representante y la ciudad donde está su oficina.
 
-select Clientes.NombreCliente, Empleados.Nombre, Oficinas.Ciudad from Clientes inner join Empleados on Clientes.CodigoEmpleadoRepVentas=Empleados.CodigoEmpleado inner join Oficinas on Empleados.CodigoOficina=Oficinas.CodigoOficina; 
+SELECT 
+    Clientes.NombreCliente, Empleados.Nombre, Oficinas.Ciudad
+FROM
+    Clientes
+        INNER JOIN
+    Empleados ON Clientes.CodigoEmpleadoRepVentas = Empleados.CodigoEmpleado
+        INNER JOIN
+    Oficinas ON Empleados.CodigoOficina = Oficinas.CodigoOficina; 
 +--------------------------------+-----------------+----------------------+
 | NombreCliente                  | Nombre          | Ciudad               |
 +--------------------------------+-----------------+----------------------+
@@ -845,7 +905,17 @@ select Clientes.NombreCliente, Empleados.Nombre, Oficinas.Ciudad from Clientes i
 
 6. Nombre, apellidos, oficina y cargo de los empleados que no son reprentantes de ventas.
 
-select Empleados.Nombre, Empleados.Apellido1, Empleados.Puesto, Oficinas.Ciudad from Empleados inner join Oficinas on Empleados.CodigoOficina=Oficinas.CodigoOficina where Empleados.Puesto <> 'Representante Ventas';
+SELECT 
+    Empleados.Nombre,
+    Empleados.Apellido1,
+    Empleados.Puesto,
+    Oficinas.Ciudad
+FROM
+    Empleados
+        INNER JOIN
+    Oficinas ON Empleados.CodigoOficina = Oficinas.CodigoOficina
+WHERE
+    Empleados.Puesto <> 'Representante Ventas';
 +----------+------------+-----------------------+----------------------+
 | Nombre   | Apellido1  | Puesto                | Ciudad               |
 +----------+------------+-----------------------+----------------------+
@@ -865,7 +935,15 @@ select Empleados.Nombre, Empleados.Apellido1, Empleados.Puesto, Oficinas.Ciudad 
 
 7. Número de empleados de cada oficina y ciudad donde está situada.
 
-select Oficinas.CodigoOficina, Oficinas.Ciudad, count(Empleados.CodigoEmpleado) from Oficinas inner join Empleados on Oficinas.CodigoOficina=Empleados.CodigoOficina group by CodigoOficina;
+SELECT 
+    Oficinas.CodigoOficina,
+    Oficinas.Ciudad,
+    COUNT(Empleados.CodigoEmpleado)
+FROM
+    Oficinas
+        INNER JOIN
+    Empleados ON Oficinas.CodigoOficina = Empleados.CodigoOficina
+GROUP BY CodigoOficina;
 +---------------+----------------------+---------------------------------+
 | CodigoOficina | Ciudad               | count(Empleados.CodigoEmpleado) |
 +---------------+----------------------+---------------------------------+
@@ -881,14 +959,408 @@ select Oficinas.CodigoOficina, Oficinas.Ciudad, count(Empleados.CodigoEmpleado) 
 +---------------+----------------------+---------------------------------+
 
 8. Listado con el nombre de los empleados y el nombre de sus jefes.
+
+SELECT 
+    E.Nombre AS 'Nombre empleado',
+    E.Apellido1,
+    E.Apellido2,
+    J.Nombre AS 'Nombre Jefe',
+    J.Apellido1,
+    J.Apellido2
+FROM
+    Empleados E
+        INNER JOIN
+    Empleados J ON J.CodigoEmpleado = E.CodigoJefe;
++-----------------+------------+-----------+-------------+------------+-----------+
+| Nombre empleado | Apellido1  | Apellido2 | Nombre Jefe | Apellido1  | Apellido2 |
++-----------------+------------+-----------+-------------+------------+-----------+
+| Ruben           | López      | Martinez  | Marcos      | Magaña     | Perez     |
+| Alberto         | Soria      | Carrasco  | Ruben       | López      | Martinez  |
+| Maria           | Solís      | Jerez     | Ruben       | López      | Martinez  |
+| Felipe          | Rosas      | Marquez   | Alberto     | Soria      | Carrasco  |
+| Juan Carlos     | Ortiz      | Serrano   | Alberto     | Soria      | Carrasco  |
+| Carlos          | Soria      | Jimenez   | Alberto     | Soria      | Carrasco  |
+| Mariano         | López      | Murcia    | Carlos      | Soria      | Jimenez   |
+| Lucio           | Campoamor  | Martín    | Carlos      | Soria      | Jimenez   |
+| Hilario         | Rodriguez  | Huertas   | Carlos      | Soria      | Jimenez   |
+| Emmanuel        | Magaña     | Perez     | Alberto     | Soria      | Carrasco  |
+| José Manuel     | Martinez   | De la Osa | Emmanuel    | Magaña     | Perez     |
+| David           | Palma      | Aceituno  | Emmanuel    | Magaña     | Perez     |
+| Oscar           | Palma      | Aceituno  | Emmanuel    | Magaña     | Perez     |
+| Francois        | Fignon     |           | Alberto     | Soria      | Carrasco  |
+| Lionel          | Narvaez    |           | Francois    | Fignon     |           |
+| Laurent         | Serra      |           | Francois    | Fignon     |           |
+| Michael         | Bolton     |           | Alberto     | Soria      | Carrasco  |
+| Walter Santiago | Sanchez    | Lopez     | Michael     | Bolton     |           |
+| Hilary          | Washington |           | Alberto     | Soria      | Carrasco  |
+| Marcus          | Paxton     |           | Hilary      | Washington |           |
+| Lorena          | Paxton     |           | Hilary      | Washington |           |
+| Nei             | Nishikori  |           | Alberto     | Soria      | Carrasco  |
+| Narumi          | Riko       |           | Nei         | Nishikori  |           |
+| Takuma          | Nomura     |           | Nei         | Nishikori  |           |
+| Amy             | Johnson    |           | Alberto     | Soria      | Carrasco  |
+| Larry           | Westfalls  |           | Amy         | Johnson    |           |
+| John            | Walton     |           | Amy         | Johnson    |           |
+| Kevin           | Fallmer    |           | Alberto     | Soria      | Carrasco  |
+| Julian          | Bellinelli |           | Kevin       | Fallmer    |           |
+| Mariko          | Kishi      |           | Kevin       | Fallmer    |           |
++-----------------+------------+-----------+-------------+------------+-----------+
+
 9. Media de unidades en stock de los productos agrupados por gama de producto.
+
+select Gama, sum(CantidadEnStock) from Productos group by Gama;
++--------------+----------------------+
+| Gama         | sum(CantidadEnStock) |
++--------------+----------------------+
+| Aromáticas   |                 1400 |
+| Frutales     |                19670 |
+| Herramientas |                   60 |
+| Ornamentales |                12617 |
++--------------+----------------------+
+
 10. Clientes que residen en ciudades donde hay oficina, indicando dirección de la oficina.
+
+SELECT 
+    Clientes.NombreCliente,
+    Clientes.Ciudad,
+    Oficinas.CodigoOficina,
+    Oficinas.Ciudad,
+    Oficinas.LineaDireccion1
+FROM
+    Clientes
+        INNER JOIN
+    Oficinas ON Clientes.Ciudad = Oficinas.Ciudad;
++--------------------------------+---------------+---------------+---------------+------------------------------+
+| NombreCliente                  | Ciudad        | CodigoOficina | Ciudad        | LineaDireccion1              |
++--------------------------------+---------------+---------------+---------------+------------------------------+
+| DGPRODUCTIONS GARDEN           | San Francisco | SFC-USA       | San Francisco | 100 Market Street            |
+| Beragua                        | Madrid        | MAD-ES        | Madrid        | Bulevar Indalecio Prieto, 32 |
+| Club Golf Puerta del hierro    | Madrid        | MAD-ES        | Madrid        | Bulevar Indalecio Prieto, 32 |
+| Naturagua                      | Madrid        | MAD-ES        | Madrid        | Bulevar Indalecio Prieto, 32 |
+| DaraDistribuciones             | Madrid        | MAD-ES        | Madrid        | Bulevar Indalecio Prieto, 32 |
+| Madrileña de riegos            | Madrid        | MAD-ES        | Madrid        | Bulevar Indalecio Prieto, 32 |
+| Dardena S.A.                   | Madrid        | MAD-ES        | Madrid        | Bulevar Indalecio Prieto, 32 |
+| Jardin de Flores               | Madrid        | MAD-ES        | Madrid        | Bulevar Indalecio Prieto, 32 |
+| Naturajardin                   | Madrid        | MAD-ES        | Madrid        | Bulevar Indalecio Prieto, 32 |
+| AYMERICH GOLF MANAGEMENT, SL   | Barcelona     | BCN-ES        | Barcelona     | Avenida Diagonal, 38         |
+| Jardines y Mansiones CACTUS SL | Madrid        | MAD-ES        | Madrid        | Bulevar Indalecio Prieto, 32 |
+| Jardinerías Matías SL          | Madrid        | MAD-ES        | Madrid        | Bulevar Indalecio Prieto, 32 |
+| france telecom                 | Paris         | PAR-FR        | Paris         | 29 Rue Jouffroy d'abbans     |
+| Musée du Louvre                | Paris         | PAR-FR        | Paris         | 29 Rue Jouffroy d'abbans     |
+| Tutifruti S.A                  | Sydney        | SYD-AU        | Sydney        | 5-11 Wentworth Avenue        |
+| FLORES S.L.                    | Madrid        | MAD-ES        | Madrid        | Bulevar Indalecio Prieto, 32 |
+| El Jardin Viviente S.L         | Sydney        | SYD-AU        | Sydney        | 5-11 Wentworth Avenue        |
++--------------------------------+---------------+---------------+---------------+------------------------------+
+
 11. Clientes que residen en ciudades donde no hay oficina, indicando la ciudad en la que viven
+
+ select Clientes.NombreCliente, Clientes.Ciudad from Clientes left join Oficinas on Clientes.Ciudad=Oficinas.Ciudad where Oficinas.Ciudad is NULL;
++-----------------------+--------------------------+
+| NombreCliente         | Ciudad                   |
++-----------------------+--------------------------+
+| Gardening Associates  | Miami                    |
+| Gerudo Valley         | New York                 |
+| Tendo Garden          | Miami                    |
+| Lasas S.A.            | Fuenlabrada              |
+| Lasas S.A.            | Fuenlabrada              |
+| Camunas Jardines S.L. | San Lorenzo del Escorial |
+| Flores Marivi         | Fuenlabrada              |
+| Flowers, S.A          | Montornes del valles     |
+| Golf S.A.             | Santa cruz de Tenerife   |
+| Aloha                 | Canarias                 |
+| El Prat               |  Barcelona               |
+| Sotogrande            | Sotogrande               |
+| Vivero Humanes        | Humanes                  |
+| Fuenla City           | Fuenlabrada              |
+| Agrojardin            | Getafe                   |
+| Top Campo             | Humanes                  |
+| Jardineria Sara       | Fenlabrada               |
+| Campohermoso          | Fuenlabrada              |
+| THE MAGIC GARDEN      | London                   |
++-----------------------+--------------------------+
+
 12. Número de clientes asignados a cada representante de ventas.
+
+SELECT 
+    Empleados.CodigoEmpleado,
+    Empleados.Nombre,
+    COUNT(Clientes.CodigoEmpleadoRepVentas) AS 'nº clientes'
+FROM
+    Empleados
+        INNER JOIN
+    Clientes ON Empleados.CodigoEmpleado = Clientes.CodigoEmpleadoRepVentas
+GROUP BY Clientes.CodigoEmpleadoRepVentas;
++----------------+-----------------+--------------+
+| CodigoEmpleado | Nombre          | nº clientes  |
++----------------+-----------------+--------------+
+|              5 | Felipe          |            5 |
+|              8 | Mariano         |            4 |
+|              9 | Lucio           |            2 |
+|             11 | Emmanuel        |            5 |
+|             12 | José Manuel     |            5 |
+|             16 | Lionel          |            2 |
+|             18 | Michael         |            2 |
+|             19 | Walter Santiago |            2 |
+|             22 | Lorena          |            2 |
+|             30 | Julian          |            5 |
+|             31 | Mariko          |            2 |
++----------------+-----------------+--------------+
+
 13. Listado con el precio total de cada pedido.
+
+select CodigoPedido, sum(Cantidad * PrecioUnidad) as 'precio sin iva' from DetallePedidos group by CodigoPedido;
++--------------+----------------+
+| CodigoPedido | precio sin iva |
++--------------+----------------+
+|            1 |        1567.00 |
+|            2 |        7113.00 |
+|            3 |       10850.00 |
+|            4 |        2624.00 |
+|            8 |        1065.00 |
+|            9 |        2535.00 |
+|           10 |        2920.00 |
+|           11 |         820.00 |
+|           12 |         290.00 |
+|           13 |         738.00 |
+|           14 |         829.00 |
+|           15 |         214.00 |
+|           16 |         234.00 |
+|           17 |         375.00 |
+|           18 |         116.00 |
+|           19 |         333.00 |
+|           20 |         292.00 |
+|           21 |         182.00 |
+|           22 |           6.00 |
+|           23 |        1640.00 |
+|           24 |         287.00 |
+|           25 |        1455.00 |
+|           26 |         675.00 |
+|           27 |         504.00 |
+|           28 |        2052.00 |
+|           29 |        1324.00 |
+|           30 |         711.00 |
+|           31 |         244.00 |
+|           32 |        3089.00 |
+|           33 |       73226.00 |
+|           34 |        1532.00 |
+|           35 |        1718.00 |
+|           36 |         311.00 |
+|           37 |        2284.00 |
+|           38 |          98.00 |
+|           39 |         108.00 |
+|           40 |          12.00 |
+|           41 |          10.00 |
+|           42 |           4.00 |
+|           43 |           9.00 |
+|           44 |           5.00 |
+|           45 |          10.00 |
+|           46 |          84.00 |
+|           47 |         164.00 |
+|           48 |        6398.00 |
+|           49 |         625.00 |
+|           50 |        3506.00 |
+|           51 |        7750.00 |
+|           53 |         141.00 |
+|           54 |         669.00 |
+|           55 |        1569.00 |
+|           56 |         377.00 |
+|           57 |         773.00 |
+|           58 |        4775.00 |
+|           74 |        3562.00 |
+|           75 |        1048.00 |
+|           76 |        2223.00 |
+|           77 |         588.00 |
+|           78 |        4660.00 |
+|           79 |         300.00 |
+|           80 |        5773.00 |
+|           81 |         120.00 |
+|           82 |        2176.00 |
+|           83 |         120.00 |
+|           89 |         710.00 |
+|           90 |          41.00 |
+|           91 |        1384.00 |
+|           92 |        2906.00 |
+|           93 |         882.00 |
+|           94 |        5759.00 |
+|           95 |         605.00 |
+|           96 |         660.00 |
+|           97 |         322.00 |
+|           98 |        1024.00 |
+|           99 |        2070.00 |
+|          100 |         800.00 |
+|          101 |         209.00 |
+|          102 |         660.00 |
+|          103 |         304.00 |
+|          104 |        1760.00 |
+|          105 |        1506.00 |
+|          106 |        1077.00 |
+|          107 |        3216.00 |
+|          108 |         660.00 |
+|          109 |         553.00 |
+|          110 |         149.00 |
+|          116 |         264.00 |
+|          117 |         154.00 |
+|          128 |          51.00 |
++--------------+----------------+
+
 14. Clientes que hayan hecho pedidos en 2008 por importe superior a 2000 euros.
+
+SELECT 
+    Clientes.NombreCliente,
+    SUM(DetallePedidos.Cantidad * DetallePedidos.PrecioUnidad) AS 'importe sin iva'
+FROM
+    Clientes
+        INNER JOIN
+    Pedidos ON Clientes.CodigoCliente = Pedidos.CodigoCliente
+        INNER JOIN
+    DetallePedidos ON Pedidos.CodigoPedido = DetallePedidos.CodigoPedido
+WHERE
+    Pedidos.FechaPedido LIKE '2008%'
+GROUP BY Clientes.NombreCliente
+HAVING SUM(DetallePedidos.Cantidad * DetallePedidos.PrecioUnidad) > 2000
+ORDER BY 2 DESC;
++--------------------------------+-----------------+
+| NombreCliente                  | importe sin iva |
++--------------------------------+-----------------+
+| Jardines y Mansiones CACTUS SL |        18279.00 |
+| Tendo Garden                   |        12490.00 |
+| Jardin de Flores               |         6883.00 |
+| Gerudo Valley                  |         4002.00 |
+| DGPRODUCTIONS GARDEN           |         3600.00 |
+| Dardena S.A.                   |         3491.00 |
++--------------------------------+-----------------+
+
 15. Cuántos pedidos tiene cada cliente en cada estado.
+
+select CodigoCliente, Estado, count(Estado) as 'nº pedidos' from Pedidos group by Estado, CodigoCliente order by 1 asc;
++---------------+-----------+-------------+
+| CodigoCliente | Estado    | nº pedidos  |
++---------------+-----------+-------------+
+|             1 | Pendiente |           4 |
+|             1 | Entregado |           5 |
+|             1 | Rechazado |           2 |
+|             3 | Rechazado |           2 |
+|             3 | Entregado |           5 |
+|             3 | Pendiente |           2 |
+|             4 | Entregado |           2 |
+|             4 | Rechazado |           2 |
+|             4 | Pendiente |           1 |
+|             5 | Entregado |           2 |
+|             5 | Rechazado |           2 |
+|             5 | Pendiente |           1 |
+|             7 | entregado |           4 |
+|             7 | rechazado |           1 |
+|             9 | entregado |           2 |
+|             9 | pendiente |           2 |
+|             9 | rechazado |           1 |
+|            13 | Pendiente |           1 |
+|            13 | Entregado |           2 |
+|            13 | Rechazado |           2 |
+|            14 | Pendiente |           1 |
+|            14 | Rechazado |           1 |
+|            14 | Entregado |           3 |
+|            15 | Rechazado |           1 |
+|            15 | Entregado |           3 |
+|            15 | Pendiente |           1 |
+|            16 | Pendiente |           2 |
+|            16 | Entregado |           6 |
+|            16 | Rechazado |           2 |
+|            19 | Entregado |           3 |
+|            19 | Pendiente |           1 |
+|            19 | Rechazado |           1 |
+|            23 | Pendiente |           2 |
+|            23 | Entregado |           2 |
+|            23 | Rechazado |           1 |
+|            26 | Entregado |           3 |
+|            26 | Pendiente |           2 |
+|            27 | Pendiente |           2 |
+|            27 | Entregado |           3 |
+|            28 | Entregado |           3 |
+|            28 | Pendiente |           1 |
+|            28 | Rechazado |           1 |
+|            30 | Entregado |           4 |
+|            30 | Rechazado |           2 |
+|            30 | Pendiente |           4 |
+|            35 | Entregado |           4 |
+|            35 | Pediente  |           1 |
+|            36 | Entregado |           2 |
+|            36 | Pendiente |           2 |
+|            36 | Rechazado |           1 |
+|            38 | Entregado |           3 |
+|            38 | Rechazado |           2 |
++---------------+-----------+-------------+
+
 16. Los clientes que hayan pedido más de 200 unidades de cualquier producto.
+
+SELECT 
+    Clientes.NombreCliente, SUM(DetallePedidos.Cantidad)
+FROM
+    Clientes
+        INNER JOIN
+    Pedidos ON Clientes.CodigoCliente = Pedidos.CodigoCliente
+        INNER JOIN
+    DetallePedidos ON Pedidos.CodigoPedido = DetallePedidos.CodigoPedido
+GROUP BY Clientes.NombreCliente
+HAVING SUM(DetallePedidos.Cantidad) > 200
+ORDER BY 2 DESC;
++--------------------------------+------------------------------+
+| NombreCliente                  | sum(DetallePedidos.Cantidad) |
++--------------------------------+------------------------------+
+| Gerudo Valley                  |                         1480 |
+| DGPRODUCTIONS GARDEN           |                         1218 |
+| Tendo Garden                   |                          882 |
+| Jardin de Flores               |                          797 |
+| Jardineria Sara                |                          670 |
+| Gardening Associates           |                          527 |
+| Jardines y Mansiones CACTUS SL |                          483 |
+| Flores Marivi                  |                          481 |
+| Jardinerías Matías SL          |                          407 |
+| Agrojardin                     |                          306 |
+| El Jardin Viviente S.L         |                          225 |
+| Tutifruti S.A                  |                          201 |
++--------------------------------+------------------------------+
+
 17. Cliente que hizo el pedido de mayor cuantía e importe.
+
+CREATE VIEW ejer17 AS
+    SELECT 
+        Clientes.CodigoCliente,
+        Clientes.NombreCliente,
+        SUM(DetallePedidos.Cantidad * DetallePedidos.PrecioUnidad) AS 'cuantía'
+    FROM
+        Clientes
+            INNER JOIN
+        Pedidos ON Clientes.CodigoCliente = Pedidos.CodigoCliente
+            INNER JOIN
+        DetallePedidos ON Pedidos.CodigoPedido = DetallePedidos.CodigoPedido
+    GROUP BY DetallePedidos.CodigoPedido;
+
+-- ()
+SELECT 
+    MAX(cuantía), NombreCliente
+FROM
+    ejer17
+GROUP BY NombreCliente
+ORDER BY 1 DESC
+LIMIT 0 , 1;
++---------------+---------------+
+| max(cuantía)  | NombreCliente |
++---------------+---------------+
+|      73226.00 | Gerudo Valley |
++---------------+---------------+
+
 18. Cliente que hizo el pedido de menor cuantía e importe.
 
+-- (utilizamos la vista creada en el ejercicio 17)
+SELECT 
+    MIN(cuantía), NombreCliente
+FROM
+    ejer17
+GROUP BY NombreCliente
+ORDER BY 1 ASC
+LIMIT 0 , 1;
++---------------+---------------+
+| min(cuantía)  | NombreCliente |
++---------------+---------------+
+|          4.00 | Golf S.A.     |
++---------------+---------------+
