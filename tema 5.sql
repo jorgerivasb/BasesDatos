@@ -37,9 +37,3 @@ select* from jugadores where nombre='Ricky Rubio';
 delete from jugadores where nombre="Ricky Rubio";
 select* from jugadores where nombre='Ricky Rubio';
 Empty set
-
--- (creamos nueva database)
-create database nbaPruebas;
-use nbaPruebas
-
-
