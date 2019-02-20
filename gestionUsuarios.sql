@@ -111,3 +111,37 @@ show grants for limitedaccess@'localhost';
 | GRANT USAGE ON *.* TO `limitedaccess`@`localhost`                                                          |
 | GRANT SELECT (`id`), INSERT (`id`), UPDATE (`id`) ON `jardineria`.`arboles` TO `limitedaccess`@`localhost` |
 +------------------------------------------------------------------------------------------------------------+
+
+
+
+
+
+
+-- (20/02/2019)
+
+Ejercicios transacciones.
+
+    Desactiva la gestión automática de transacciones.
+    
+    start transaction;
+
+    Localiza pedidos que no tengan detalles asociados y añáde 3 detalles de pedido mediante transacciones. Confirma los detalles del pedido.
+    
+    update Pedidos set Comentarios= "Todo Correcto" where CodigoPedido=123;
+    update Pedidos set Comentarios= "Todo Correcto" where CodigoPedido=124;
+    update Pedidos set Comentarios= "Todo Correcto" where CodigoPedido=127;
+    commit;
+    
+    Mediante otra transacción, crea un pedido y añade varias líneas de detalle. Confirma la operación.
+    
+    start transaction;
+    insert into Pedidos values (200,'2008-04-29','2008-04-29','2008-04-29','Entregado', "Todo en orden", 23);
+    commit;
+    
+    Repite el ejercicio 3 con otros datos y efectúa rollback. Describe lo que ocurre.
+    
+    start transaction;
+    insert into Pedidos values (201,'2008-04-29','2008-04-29','2008-04-29','Entregado', "Todo en orden", 5);
+	rollback;
+    
+    -- (lo que ocurre es que el rollback anula el insert, es como si nunca hubieras ejecutado dicho comando, ya que este forma parte de una transacción que ha sido cancelada y todo a vuelto a su origen)
