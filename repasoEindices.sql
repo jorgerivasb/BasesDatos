@@ -47,6 +47,85 @@ Como vemos no podemos realizar esta acción ya que el programa intenta conservar
    
 7. Crea una vista que devuelva el cliente que más dinero ha gastado en total. LLámala cliente_top.
 
-create view cliente_top as select Clientes.CodigoCliente, Clientes.NombreCliente from Clientes inner join Pedidos on
-Clientes.CodigoCliente=Pedidos.CodigoCliente inner join DetallePedidos on Pedidos.CodigoPedido=DetallePedidos.CodigoPedido where 
-DetallePedidos.PVP = (select max(PVP) from DetallePedidos);
+create view cliente_top as select Clientes.CodigoCliente, Clientes.NombreCliente, sum(DetallePedidos.Cantidad*DetallePedidos.PrecioUnidad) 
+from Clientes inner join Pedidos on Clientes.CodigoCliente=Pedidos.CodigoCliente inner join DetallePedidos 
+on Pedidos.CodigoPedido=DetallePedidos.CodigoPedido group by Clientes.CodigoCliente limit 1;
+
+select * from cliente_top;
++---------------+----------------------+----------------------------------------------------------+
+| CodigoCliente | NombreCliente        | sum(DetallePedidos.Cantidad*DetallePedidos.PrecioUnidad) |
++---------------+----------------------+----------------------------------------------------------+
+|             1 | DGPRODUCTIONS GARDEN |                                                  6165.00 |
++---------------+----------------------+----------------------------------------------------------+
+
+
+
+-- (Ejers índices)
+1. Localiza los índices ya presentes en la BD employees. ¿Cuáles son y a qué campos afectan?
+
+show index from dept_emp;
++----------+------------+----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+
+| Table    | Non_unique | Key_name | Seq_in_index | Column_name | Collation | Cardinality | Sub_part | Packed | Null | Index_type |
++----------+------------+----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+
+| dept_emp |          0 | PRIMARY  |            1 | emp_no      | A         |      299527 |     NULL |   NULL |      | BTREE      |        
+| dept_emp |          0 | PRIMARY  |            2 | dept_no     | A         |      331143 |     NULL |   NULL |      | BTREE      |   
+| dept_emp |          1 | dept_no  |            1 | dept_no     | A         |           8 |     NULL |   NULL |      | BTREE      |  
++----------+------------+----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+
+
+ show index from departments;
++-------------+------------+-----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+
+| Table       | Non_unique | Key_name  | Seq_in_index | Column_name | Collation | Cardinality | Sub_part | Packed | Null | Index_type | 
++-------------+------------+-----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+
+| departments |          0 | PRIMARY   |            1 | dept_no     | A         |           9 |     NULL |   NULL |      | BTREE      | 
+| departments |          0 | dept_name |            1 | dept_name   | A         |           9 |     NULL |   NULL |      | BTREE      | 
++-------------+------------+-----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+
+
+show index from dept_manager;
++--------------+------------+----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+
+| Table        | Non_unique | Key_name | Seq_in_index | Column_name | Collation | Cardinality | Sub_part | Packed | Null | Index_type | 
++--------------+------------+----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+
+| dept_manager |          0 | PRIMARY  |            1 | emp_no      | A         |          24 |     NULL |   NULL |      | BTREE      |
+| dept_manager |          0 | PRIMARY  |            2 | dept_no     | A         |          24 |     NULL |   NULL |      | BTREE      | 
+| dept_manager |          1 | dept_no  |            1 | dept_no     | A         |           9 |     NULL |   NULL |      | BTREE      |  
++--------------+------------+----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+
+
+
+show index from employees;
++-----------+------------+-----------------+--------------+-------------+-----------+-------------+----------+--------+------+------------+
+| Table     | Non_unique | Key_name        | Seq_in_index | Column_name | Collation | Cardinality | Sub_part | Packed | Null | Index_type |
++-----------+------------+-----------------+--------------+-------------+-----------+-------------+----------+--------+------+------------+
+| employees |          0 | PRIMARY         |            1 | emp_no      | A         |      299600 |     NULL |   NULL |      | BTREE      |
+| employees |          1 | employees_birth |            1 | birth_date  | A         |        4700 |     NULL |   NULL |      | BTREE      |
++-----------+------------+-----------------+--------------+-------------+-----------+-------------+----------+--------+------+------------+
+
+
+show index from salaries;
++----------+------------+----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+
+| Table    | Non_unique | Key_name | Seq_in_index | Column_name | Collation | Cardinality | Sub_part | Packed | Null | Index_type | 
++----------+------------+----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+
+| salaries |          0 | PRIMARY  |            1 | emp_no      | A         |      278005 |     NULL |   NULL |      | BTREE      | 
+| salaries |          0 | PRIMARY  |            2 | from_date   | A         |     2657697 |     NULL |   NULL |      | BTREE      | 
++----------+------------+----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+
+
+
+show index from titles;
++--------+------------+----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+
+| Table  | Non_unique | Key_name | Seq_in_index | Column_name | Collation | Cardinality | Sub_part | Packed | Null | Index_type |
++--------+------------+----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+
+| titles |          0 | PRIMARY  |            1 | emp_no      | A         |      300222 |     NULL |   NULL |      | BTREE      |          
+| titles |          0 | PRIMARY  |            2 | title       | A         |      442605 |     NULL |   NULL |      | BTREE      |           
+| titles |          0 | PRIMARY  |            3 | from_date   | A         |      443021 |     NULL |   NULL |      | BTREE      |         
++--------+------------+----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+
+
+
+2. Explica brevemente la utilidad de introducir índices en la BD.
+
+Los índices sirven para recibir los resultados de nuestras consultas más rapidamente. Sin índices mysql empezaría a buscar por la primera fila de la tabla
+hasta encontrar lo que busca. Con índices en las columnas utilizadas en la consulta, mysql tiene una referencia directa hacia los datos sin necesidad de 
+recorrer todos hasta llegar a los que busca.
+
+3. Indica cómo mejorarías el rendimiento de consultas de empleados por apellidos.
+
+Primero implementaría un índice FullText ya que es el indicado para campos de tipo varchar, en el caso de que solo necesitara un número determinado de resultados 
+usaríamos Limit, solo usaría % para rellenar parte del apellido en caso de extrema necesidad ya que penaliza el rendimiento y aunque normalmente utilizamos varchar
+ya que ocupa menos espacio podríamos usar datos del tipo char ya que es mucho más rápido encontrarlos.  
