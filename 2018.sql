@@ -1,4 +1,4 @@
--- (como importar bases de datos)
+-- (como importar bases de datos (primero creamos un schema en workbench))
 mysql -u root -p nombre_base_datos<ruta_fichero.sql;
 -- ()
 select conferencia from equipos where conferencia = 'East';

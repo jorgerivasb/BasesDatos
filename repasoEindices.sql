@@ -126,6 +126,6 @@ recorrer todos hasta llegar a los que busca.
 
 3. Indica cómo mejorarías el rendimiento de consultas de empleados por apellidos.
 
-Primero implementaría un índice FullText ya que es el indicado para campos de tipo varchar, en el caso de que solo necesitara un número determinado de resultados 
+Primero implementaría un índice FullText ya que es el indicado para campos de tipo char y varchar, en el caso de que solo necesitara un número determinado de resultados 
 usaríamos Limit, solo usaría % para rellenar parte del apellido en caso de extrema necesidad ya que penaliza el rendimiento y aunque normalmente utilizamos varchar
 ya que ocupa menos espacio podríamos usar datos del tipo char ya que es mucho más rápido encontrarlos.  
