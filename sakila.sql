@@ -78,8 +78,51 @@
 	+----------+
 
     ¿Qué apellidos aparecen más de una vez?
+    
+    select last_name, count(last_name) from actor group by last_name having count(last_name)>1;
+    
     ¿Qué actor aparece en más películas?
+    
+    #esta consulta no nos indica quien ha hecho más pelis, solo nos indica cuantas ha hecho cada uno
+    select actor.first_name, count(film_actor.actor_id) from actor inner join film_actor on actor.actor_id=film_actor.actor_id 
+    inner join film on film_actor.film_id=film.film_id group by actor.first_name;
+    
+    #pero si intentamos consultas como esta:
+	select actor.first_name, max(count(film_actor.actor_id)) from actor inner join film_actor on actor.actor_id=film_actor.actor_id 
+    inner join film on film_actor.film_id=film.film_id group by actor.first_name;
+	#nos da error al añadir el max, por tanto creamos una vista 
+    create view  jorge1 as select actor.first_name, count(film_actor.actor_id) as 'nºpelis' from actor 
+    inner join film_actor on actor.actor_id=film_actor.actor_id inner join film on film_actor.film_id=film.film_id group by actor.first_name;
+    
+    #nos deja hacer esto
+    select max(nºpelis) from jorge1;
+    #pero no esto otro
+    select first_name, max(nºpelis) from jorge1;
+    #por tanto no nos queda más remedio que hacerlo así
+    select first_name from jorge1 where nºpelis='103';
+    +------------+
+	| first_name |
+	+------------+
+	| KENNETH    |
+	+------------+
+
+
     ¿Está 'Academy Dinosaur' disponible para alquilar desde la Store 1?
+    
+    select inventory.store_id, inventory.film_id, film.title from inventory inner join film on inventory.film_id=film.film_id where film.title='Academy Dinosaur';
+	+----------+---------+------------------+
+	| store_id | film_id | title            |
+	+----------+---------+------------------+
+	|        1 |       1 | ACADEMY DINOSAUR |
+	|        1 |       1 | ACADEMY DINOSAUR |
+	|        1 |       1 | ACADEMY DINOSAUR |
+	|        1 |       1 | ACADEMY DINOSAUR |
+	|        2 |       1 | ACADEMY DINOSAUR |
+	|        2 |       1 | ACADEMY DINOSAUR |
+	|        2 |       1 | ACADEMY DINOSAUR |
+	|        2 |       1 | ACADEMY DINOSAUR |
+	+----------+---------+------------------+
+
     Inserta un registro para señalar que Mary Smith alquila 'Academy Dinosaur' siendo atendida por Mike Hillyer en la Store 1 hoy.
     ¿Cuál es la duración media de las películas?
     ¿Cuál es la duración media de las películas por categoría?
