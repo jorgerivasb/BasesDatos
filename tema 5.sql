@@ -87,3 +87,8 @@ delete from Pagos where CodigoCliente=16;
 update Clientes set LimiteCredito=0 where CodigoCliente in (select CodigoCliente from Pedidos where CodigoPedido in 
 (select CodigoPedido from DetallePedidos where CodigoProducto='OR-179'));
 #(así, en realidad, hemos modificado el crédito de los 2 clientes que pidieron unidades de dicho producto)
+
+
+#otro ejer parecido 
+update Clientes set LimiteCredito=2222 where CodigoCliente = (select p.CodigoCliente from Pedidos p inner join DetallePedidos d on p.CodigoPedido=d.CodigoPedido 
+where d.CodigoProducto='OR-179' group by p.CodigoCliente having min(d.Cantidad) limit 1);
