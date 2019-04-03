@@ -85,11 +85,57 @@ END $$
 select primoSiNo(5);
 
 
-#5 Crea un procedimiento que muestre el nombre del representante de ventas que más clientes tiene
+#5 Crea una función que muestre el nombre del representante de ventas que más clientes tiene
+
+drop function if exists `masClientes`;
+
+delimiter $$
+create function masClientes()
+returns varchar(55)
+deterministic
+begin
+
+declare nombre varchar(55);
+declare numClientes int;
+
+declare nombreganador varchar(55) default '';
+declare numganador int default 0;
+
+declare finalizado bool default 0;
+
+declare c1 cursor  for SELECT 
+    concat(e.nombre,' ', e.apellido1) as nombreCompleto, COUNT(c.CodigoCliente) as numClientes
+FROM
+    Empleados e
+        INNER JOIN
+    Clientes c on e.CodigoEmpleado = c.CodigoEmpleadoRepVentas
+    group by c.CodigoEmpleadoRepVentas;
+declare continue handler for NOT FOUND SET finalizado = 1;
+open c1;
 
 
+masvendedor_loop: LOOP
+ 
+ FETCH c1 INTO nombre, numClientes;
+
+	if(numganador < numClientes) then 
+		set nombreganador = nombre;
+        set numganador = numClientes;
+	end if;
+    IF finalizado = 1 THEN 
+		 LEAVE masvendedor_loop;
+	END IF;
+	END LOOP masvendedor_loop;
+close c1;
+
+return nombreganador;
+end$$
+select masClientes();
 
 #6 Crear mediante cursores un procedimiento que muestre datos de un cliente, los pagos y pedidos que ha hecho.
+
+
+
 #Ejemplo cursor
 
 create table tipo_cliente (codigoCliente int, tipo varchar(10));
