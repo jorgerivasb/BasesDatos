@@ -134,7 +134,67 @@ select masClientes();
 
 #6 Crear mediante cursores un procedimiento que muestre datos de un cliente, los pagos y pedidos que ha hecho.
 
+#7 Crear mediante cursores una función que muestre si un cliente ha pagado más/menos de lo pedido.
 
+drop function if exists `saldo`;
+
+delimiter $$
+create function saldo(codigo int)
+returns double
+deterministic
+begin
+
+declare diferencia double;
+declare pedido double;
+declare cantidadpedidos double;
+declare pagado double;
+declare cantidadpagada double;
+declare finalizado bool default 0;
+declare finalizado2 bool default 0;
+
+declare c1 cursor  for select DetallePedidos.PrecioUnidad*DetallePedidos.Cantidad from Pedidos inner join DetallePedidos 
+on Pedidos.CodigoPedido=DetallePedidos.CodigoPedido where Pedidos.CodigoCliente=codigo;
+
+
+declare c2 cursor for select Cantidad from Pagos where CodigoCliente=codigo;
+declare continue handler for NOT FOUND SET finalizado2 = 1; set finalizado = 1;
+
+open c1;
+
+jorge: LOOP
+ 
+ FETCH c1 INTO pedido;
+
+	set cantidadpedidos = pedido + cantidadpedidos; 
+    
+    IF finalizado = 1 THEN 
+		 LEAVE jorge;
+	END IF;
+	END LOOP jorge;
+close c1;
+
+
+open c2;
+
+jorge2: LOOP
+ 
+ FETCH c2 INTO pagado;
+
+	set cantidadpagada = pagado + cantidadpagada;
+    
+    IF finalizado2 = 1 THEN 
+		 LEAVE jorge2;
+	END IF;
+	END LOOP jorge2;
+close c2;
+
+
+set diferencia=cantidadpagada-cantidadpedidos;
+return diferencia;
+end$$
+
+
+select saldo(3);
 
 #Ejemplo cursor
 
